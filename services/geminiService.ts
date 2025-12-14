@@ -1,10 +1,15 @@
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import { Message, Role, ModelType } from "../types";
 
-// Initialize the client outside the function to reuse connection if possible
-// Ensure API_KEY is available in the environment
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+// Helper to get the AI client
+// We initialize lazily or just safeguard the global instance creation
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please check your settings.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export const streamChatResponse = async (
   messages: Message[],
@@ -15,6 +20,8 @@ export const streamChatResponse = async (
   onError: (error: Error) => void
 ) => {
   try {
+    const ai = getAiClient();
+
     // 1. Prepare history for the chat session
     // Exclude the last message (current user prompt) which we send via sendMessageStream
     const history = messages.slice(0, -1).map(msg => ({

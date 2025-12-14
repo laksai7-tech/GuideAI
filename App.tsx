@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // Use simple random string generator if uuid not available
+// Removed unused import for uuid
 import Sidebar from './components/Layout/Sidebar';
 import ModelSelector from './components/Layout/ModelSelector';
 import WelcomeScreen from './components/Chat/WelcomeScreen';
